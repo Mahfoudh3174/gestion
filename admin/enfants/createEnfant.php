@@ -1,12 +1,12 @@
 <?php
-require __DIR__ . '/../layout/header.php';
+require __DIR__ . '/../../layout/header.php';
 if(!isset($_SESSION['admin']))
 {header("Location: http://localhost/gestion/login.php");
     exit;
 }
-require __DIR__ . '/../connect.php'; // Database connection
-require __DIR__ . '/../model/Employe.php';
-require __DIR__ . '/../db/emloyees.php';
+require __DIR__ . '/../../connect.php'; // Database connection
+require __DIR__ . '/../../model/Employe.php';
+require __DIR__ . '/../../db/enfants.php';
 
 $email = $password = $nom = $prenom = $adresse = $tel = '';
 $errors = [];
@@ -14,7 +14,6 @@ $message = '';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Récupération et nettoyage des données
-    $email = trim($_POST["email"] );
 
     $nom = trim($_POST["nom"] );
     $prenom = trim($_POST["prenom"] );
@@ -22,11 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $tel = trim($_POST["tel"] );
 
     // Validation des champs
-    if (empty($email)) {
-        $errors["email"] = "L'email est requis.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors["email"] = "Format d'email invalide.";
-    }
     
 
     if (empty($nom)) {
@@ -43,23 +37,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if (empty($errors)) {
-        $employe = new Employe();
-        $employe->setEmail($email);
-        $employe->setNom($nom);
-        $employe->setPrenom($prenom);
-        $employe->setAdresse($adresse);
-        $employe->setTel($tel);
+        $enfant = new Enfant();
+        $enfant->setNom($nom);
+        $enfant->setPrenom($prenom);
+        $enfant->setAdresse($adresse);
+        $enfant->setTel($tel);
 
-        $db = new ManageEmploye();
-        if ($db->isExiste($employe)) {
-            $errors["email"] = "Email déjà existant.";
+        $db = new ManageEnfant();
+        if ($db->isExiste($enfant)) {
+            $_SESSION['error'] = "Enfant déjà existant.";
         } else {
-            if ($db->addEmploye($employe)) {
-                $_SESSION['success'] = "Employé ajouté avec succès.";
-                header("Location: http://localhost/gestion/admin/dashboard.php");
-            } else {
-               $_SESSION['error'] = "Une erreur s'est produite lors de l'ajout de l'employé.";
-            }
+            $db->ajouterEnfant($enfant);
+            $_SESSION['success'] = "Enfant ajouté avec succès.";
+            header("Location: http://localhost/gestion/admin/dashboard.php");
+            
         }
     }
 }
@@ -69,6 +60,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <?php if (!empty($message)): ?>
         <div class="text-green-500 p-2 text-center"><?= htmlspecialchars($message) ?></div>
     <?php endif; ?>
+
+    <?php
+    if(isset($_SESSION['success'])){?>
+    <span class="text-green-500 p-2 text-center"><?= $_SESSION['success'] ?></span>
+    <?php unset($_SESSION['success']);
+    }elseif(isset($_SESSION['error'])){?>
+    <span class="text-red-500 p-2 text-center"><?= $_SESSION['error'] ?></span>
+    <?php unset($_SESSION['error']);
+    }
+     ?>
+
     <span class="text-red-400 p-1 w-full"><?= $errors['general'] ?? '' ?></span>
     
     <h2 class="text-green-500 text-center text-2xl font-bold mb-4">Ajouter Employé</h2>

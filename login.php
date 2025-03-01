@@ -23,15 +23,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $db = new ManageEnfant();
     if($db->isAdmin($user, $password)){
       $_SESSION['user'] = $user;
+      $_SESSION['admin'] = true;
       header("Location: http://localhost/gestion/index.php");
     }
-    $enfant = new Enfant();
-    $enfant->setTel($user);
-    $enfant->setPassword($password);
-    if ($db->login($user, $password)) {
-      $_SESSION['user'] = $user;
-      header("Location: http://localhost/gestion/index2.php");
-    }
+
   }
   $errors["error"] = "Dosolé l'utilisateur non trouvé";
 }

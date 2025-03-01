@@ -17,5 +17,6 @@ class Employe extends Enfant {
     public function setEmail($email) {
         $this->email = $email;
     }
+    
 }
 ?>

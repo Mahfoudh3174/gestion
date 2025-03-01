@@ -36,23 +36,23 @@ class ManageEmploye{
     }
     public function addEmploye(Employe $em){
         $email = $em->getEmail();
-        $password = $em->getPassword();
+        
         $nom= $em->getNom();
         $prenom= $em->getPrenom();
         $adresse = $em->getAdresse();
         $tel = $em->getTel();
 
 
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT); // Sécurisation du mot de passe
+       
 
-        $sql = "INSERT INTO employes (nom, prenom, adresse,tel,email, password) VALUES (?, ?,?, ?, ?, ?)";
+        $sql = "INSERT INTO employes (nom, prenom, adresse,tel,email) VALUES (?,?, ?, ?, ?)";
 
         global $conn;  // Assuming $conn is your mysqli connection
 
         // Prepare the statement
         if ($stmt = $conn->prepare($sql)) {
             // Bind the parameters for the query
-            $stmt->bind_param("ssssss", $nom, $prenom, $adresse,$tel, $email, $passwordHash);
+            $stmt->bind_param("sssss", $nom, $prenom, $adresse,$tel, $email);
 
             // Execute the query and check for success
             if ($stmt->execute()) {
@@ -68,5 +68,58 @@ class ManageEmploye{
         $result = $conn->query($sql);
         return $result;
     }
+
+    public function deleteEmploye($id) {
+        $sql = "DELETE FROM employes WHERE id = ?";
+        global $conn;  // Assuming $conn is your mysqli connection
+        if ($stmt = $conn->prepare($sql)) {
+            $stmt->bind_param("i", $id);
+            if ($stmt->execute()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function findEmploye($id) {
+        $sql = "SELECT * FROM employes WHERE id = ?";
+        global $conn;  // Assuming $conn is your mysqli connection
+        if ($stmt = $conn->prepare($sql)) {
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                return $result;
+            }
+        }
+        return null;
+    }
+    public function updateEmploye(Employe $employe)
+{
+    global $conn;  
+     $nom= $employe->getNom();
+     $prenom= $employe->getPrenom();
+     $adresse = $employe->getAdresse();
+     $tel = $employe->getTel();
+     $email = $employe->getEmail();
+     $id= $employe->getId();
+    // Prepare SQL query (update only if values are provided)
+    $sql = "UPDATE employes SET nom = ?, prenom = ?, adresse = ?, tel = ?, email = ? WHERE id = ?";
+    
+    // Check if password is set
+    
+
+    // Prepare and execute query
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sssssi", $nom, $prenom, $adresse, $tel, $email, $id);
+    
+    $success = $stmt->execute();
+    
+    $stmt->close();
+    $conn->close();
+
+    return $success;
+}
+
 }
 ?>

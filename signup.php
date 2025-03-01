@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $prenom = trim($_POST["prenom"]);
     $adresse = trim($_POST["adresse"]);
     $tel = trim($_POST["tel"]);
-    $password = trim($_POST["password"]);
+  
 
     // Validation des champs
     if (empty($nom)) {
@@ -34,16 +34,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $errors["tel"] = "Numéro invalide (8 chiffres requis mattel/chinguitel/mauritel).";
     }
     $enfant->setTel($tel);
-    if (empty($password)) {
-        $errors["password"] = "Le mot de passe est requis.";
-    } elseif (strlen($password) < 6) {
-        $errors["password"] = "Le mot de passe doit contenir au moins 6 caractères.";
-    }
-    $enfant->setPassword($password);
-    $db = new ManageEnfant();
+
     
     if ($db->isExiste($enfant)) {
-        $errors["message"] = "Cet enfant existe déjà";
+        $_SESSION["error"] = "Cet enfant existe déjà";
         
     }
 
@@ -51,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($errors)) {
         $db->ajouterEnfant($enfant);
         
-        header("Location: http://localhost/gestion/login.php");
+        $_SESSION["success"] = "Inscription effectuée avec succès";
     }
 }
 ?>
@@ -69,7 +63,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
     <div class="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
-        <span class="text-red-400 p-1 w-full"><?= $errors['message'] ?? '' ?></span>
+    <?php
+    if(isset($_SESSION['success'])){?>
+    <span class="text-green-500 p-2 text-center"><?= $_SESSION['success'] ?></span>
+    <?php unset($_SESSION['success']);
+    }elseif(isset($_SESSION['error'])){?>
+    <span class="text-red-500 p-2 text-center"><?= $_SESSION['error'] ?></span>
+    <?php unset($_SESSION['error']);
+    }
+     ?>
         <h2 class="text-green-500 text-center text-2xl font-bold mb-4">Inscription</h2>
         <form action="" method="post" class="space-y-4">
             <div>
@@ -100,12 +102,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <div class="text-red-400 p-1 w-full"><?= $errors['tel'] ?? '' ?></div>
             </div>
 
-            <div>
-                <label class="block text-gray-700 text-lg font-semibold mb-1" for="password">Mot de passe</label>
-                <input class="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" 
-                       type="password" id="password" name="password" />
-                <div class="text-red-400 p-1 w-full"><?= $errors['password'] ?? '' ?></div>
-            </div>
 
             <button type="submit" class="w-full bg-green-500 text-white font-semibold py-2 rounded-md hover:bg-green-600 transition duration-300">
                 S'inscrire

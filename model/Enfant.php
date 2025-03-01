@@ -5,7 +5,6 @@
     private $prenom;
     private $adresse;
     private $tel; 
-    private $password;
 
     public function __construct(){}
 
@@ -28,9 +27,7 @@
         return $this->tel;
     }
 
-    public function getPassword() {
-        return $this->password;
-    }
+
 
     public function setNom($nom) {
         $this->nom = $nom;
@@ -48,8 +45,9 @@
         $this->tel = $tel;
     }
 
-    public function setPassword($password) {
-        $this->password = $password;
+
+    public function setId($id) {
+        $this->id = $id;
     }
 }
 ?>
