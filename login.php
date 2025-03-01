@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if($db->isAdmin($user, $password)){
       $_SESSION['user'] = $user;
       $_SESSION['admin'] = true;
-      header("Location: http://localhost/gestion/index.php");
+      header("Location: http://localhost/gestion/admin/dashboard.php");
     }
 
   }
@@ -42,7 +42,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   </head>
   <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
-      <span class="text-red-500 text-sm"><?php echo isset($errors["error"]) ? $errors["error"] : ''; ?>😁</span>
+      <?php
+      if(isset($errors["error"])) {?>
+        <span class="text-red-500 p-2 text-center"><?= $errors["error"] ?>😁</span>
+        <?php
+      }
+      ?>
       <h2 class="text-green-500 text-center text-2xl font-bold mb-4">Login</h2>
       <form action="" method="post" class="space-y-4">
         <div>
