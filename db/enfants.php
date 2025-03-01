@@ -3,6 +3,7 @@
 require __DIR__ . '/../connect.php'; // Database connection
 
 class ManageEnfant {
+
     // Method to add a new child (enfant)
     public function ajouterEnfant(Enfant $en) {
         // Sécuriser les données avant insertion
@@ -11,7 +12,7 @@ class ManageEnfant {
         $adresse = $en->getAdresse();
         $tel = $en->getTel();
         $password = $en->getPassword();  // This should already be hashed
-
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT); // Sécurisation du mot de passe
         // Prepare the SQL query to insert the data
         $sql = "INSERT INTO enfants (nom, prenom, adresse, tel, password) VALUES (?, ?, ?, ?, ?)";
 
@@ -20,7 +21,7 @@ class ManageEnfant {
         // Prepare the statement
         if ($stmt = $conn->prepare($sql)) {
             // Bind the parameters for the query
-            $stmt->bind_param("sssss", $nom, $prenom, $adresse, $tel, $password);
+            $stmt->bind_param("sssss", $nom, $prenom, $adresse, $tel, $passwordHash);
 
             // Execute the query and check for success
             if ($stmt->execute()) {
@@ -72,14 +73,28 @@ class ManageEnfant {
             if (password_verify($password, $storedHash)) {
                 return true;
             }
-        
+        }
         return false;
     }
-    public function login(Enfant $en) {
+    
+    public function login($tel, $password) {
         global $conn;
-        $email = $en->getEmail();
-        $tel = $en->getTel();
-        $password = $en->getPassword();  // This should be a plain password for comparison
+        $stmt=$conn->prepare( "SELECT password FROM enfants WHERE tel = ?");
+        $stmt->bind_param("s", $tel);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $storedHash = $result->fetch_assoc()['password'];  // Fetch the stored hashed password
+            // Check if the input password matches the stored hashed password
+            if (password_verify($password, $storedHash)) {
+                return true;
+            }
+        }
+        return false;
     }
+
 }
+ 
+
+
 ?>

@@ -39,7 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } elseif (strlen($password) < 6) {
         $errors["password"] = "Le mot de passe doit contenir au moins 6 caractères.";
     }
-    $passwordHash = password_hash($password, PASSWORD_DEFAULT); // Sécurisation du mot de passe
     $enfant->setPassword($password);
     $db = new ManageEnfant();
     
