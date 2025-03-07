@@ -1,7 +1,7 @@
 <?php
 session_start();
-if(!isset($_SESSION['user']) || !isset($_GET['id'])){
-    header("Location: http://localhost/gestion/login.php");
+if(!isset($_GET['id'])){
+    header("Location: http://localhost/gestion/admin/dashboard.php");
     exit;
 }
 require __DIR__ . '/../../db/enfants.php';

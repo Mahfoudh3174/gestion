@@ -2,10 +2,7 @@
 
 
 require __DIR__ . '/../../layout/header.php';
-if(!isset($_SESSION['admin']))
-{header("Location: http://localhost/gestion/login.php");
-    exit;
-}
+
 require __DIR__ . '/../../db/enfants.php';
 
 $db=new ManageEnfant();

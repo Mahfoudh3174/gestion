@@ -1,8 +1,8 @@
 <?php
 session_start();
-if(!isset($_SESSION['admin']) || !isset($_GET['id'])){
-    header("Location: http://localhost/gestion/login.php");
-    exit;
+if(!isset($_GET['id'])){
+    header("Location: http://localhost/gestion/admin/dashboard.php");
+    
 }
 require __DIR__ . '/../db/emloyees.php';
 

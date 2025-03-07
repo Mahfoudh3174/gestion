@@ -1,9 +1,5 @@
 <?php
 require __DIR__ . '/../layout/header.php';
-if(!isset($_SESSION['admin']))
-{header("Location: http://localhost/gestion/login.php");
-    exit;
-}
 require __DIR__ . '/../connect.php'; // Database connection
 require __DIR__ . '/../model/Employe.php';
 require __DIR__ . '/../db/emloyees.php';
