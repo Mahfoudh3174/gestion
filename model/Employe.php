@@ -1,6 +1,7 @@
 <?php
 
 require __DIR__ . '/Enfant.php';
+
 class Employe extends Enfant {
 
     private $email;

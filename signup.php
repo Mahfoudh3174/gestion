@@ -16,15 +16,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   
 
     // Validation des champs
-    if (empty($nom)) {
+    if (empty($nom) || !preg_match("/^[a-zA-Z-' ]*$/", $nom)) {
         $errors["nom"] = "Le nom ne peut pas être vide.";
     }
     $enfant->setNom($nom);
-    if (empty($prenom)) {
+    if (empty($prenom)|| !preg_match("/^[a-zA-Z-' ]*$/", $prenom)) {
         $errors["prenom"] = "Le prénom ne peut pas être vide.";
     }
     $enfant->setPrenom($prenom);
-    if (empty($adresse)) {
+    if (empty($adresse) || !preg_match("/^[a-zA-Z-' ]*$/", $adresse)) {
         $errors["adresse"] = "L'adresse est requise.";
     }
     $enfant->setAdresse($adresse);
@@ -66,10 +66,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <?php
     if(isset($_SESSION['success'])){?>
     <span class="text-green-500 p-2 text-center"><?= $_SESSION['success'] ?></span>
-    <?php unset($_SESSION['success']);
+    <?php
     }elseif(isset($_SESSION['error'])){?>
     <span class="text-red-500 p-2 text-center"><?= $_SESSION['error'] ?></span>
-    <?php unset($_SESSION['error']);
+    <?php
     }
      ?>
         <h2 class="text-green-500 text-center text-2xl font-bold mb-4">Inscription</h2>

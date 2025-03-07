@@ -1,18 +1,20 @@
 <?php
 session_start();
 
-require 'model/Enfant.php';
-require 'db/enfants.php';
-$user = $password = '';
+
+require __DIR__ .'/db/admins.php';
+//require 'db/admins.php';
+$email = $password = '';
 $errors = [];
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   // Récupération et nettoyage des données
-  $user = trim($_POST["user"]);
+  
+  $email = trim($_POST["email"]);
   $password = trim($_POST["password"]);
 
   // Validation des champs
-  if (empty($user)) {
-    $errors["user"] = "email ou telephone est requis.";
+  if (empty($email)) {
+    $errors["email"] = "email est requis.";
   }
   if (empty($password)) {
     $errors["password"] = "Le mot de passe est requis.";
@@ -20,15 +22,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
   if (empty($errors)) {
     
-    $db = new ManageEnfant();
-    if($db->isAdmin($user, $password)){
-      $_SESSION['user'] = $user;
-      $_SESSION['admin'] = true;
+    $db = new ManageAdmin();
+    if($db->isAdmin($email, $password)){
+      $_SESSION['user'] = $email;
       header("Location: http://localhost/gestion/admin/dashboard.php");
     }
+    $errors["error"] = "Dosolé l'utilisateur n'est pas trouvé";
 
   }
-  $errors["error"] = "Dosolé l'utilisateur non trouvé";
 }
 
 ?>
@@ -46,14 +47,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       if(isset($errors["error"])) {?>
         <span class="text-red-500 p-2 text-center"><?= $errors["error"] ?>😁</span>
         <?php
+        
       }
       ?>
       <h2 class="text-green-500 text-center text-2xl font-bold mb-4">Login</h2>
       <form action="" method="post" class="space-y-4">
         <div>
-          <label class="block text-gray-700 text-lg font-semibold mb-1" for="email">Email ou Telephone</label>
-          <input class="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" type="text" id="email" name="user" required />
-          <span class="text-red-500 text-sm"><?php echo isset($errors["user"]) ? $errors["user"] : ''; ?></span>
+          <label class="block text-gray-700 text-lg font-semibold mb-1" for="email">Email</label>
+          <input class="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" type="text" id="email" name="email" required />
+          <span class="text-red-500 text-sm"><?php echo isset($errors["email"]) ? $errors["email"] : ''; ?></span>
         </div>
         <div>
           <label class="block text-gray-700 text-lg font-semibold mb-1" for="password">Password</label>

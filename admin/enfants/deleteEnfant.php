@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(!isset($_SESSION['admin']) || !isset($_GET['id'])){
+if(!isset($_SESSION['user']) || !isset($_GET['id'])){
     header("Location: http://localhost/gestion/login.php");
     exit;
 }
